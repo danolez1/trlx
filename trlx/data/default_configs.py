@@ -29,7 +29,7 @@ def default_ppo_config():
         model=ModelConfig(model_path="lvwerra/gpt2-imdb", num_layers_unfrozen=2),
         tokenizer=TokenizerConfig(tokenizer_path="gpt2", truncation_side="right"),
         optimizer=OptimizerConfig(
-            name="adamw", kwargs=dict(lr=3e-5, betas=(0.9, 0.95), eps=1.0e-8, weight_decay=1.0e-6)
+            name="adamw", kwargs=dict(lr=3e-2, betas=(0.93, 0.98), eps=1.0e-8, weight_decay=0)
         ),
         scheduler=SchedulerConfig(name="cosine_annealing", kwargs=dict(T_max=1e12, eta_min=3e-5)),
         method=PPOConfig(
@@ -62,8 +62,8 @@ def default_ppo_config():
 def default_ilql_config():
     return TRLConfig(
         train=TrainConfig(
-            seq_length=64,
-            batch_size=128,
+            seq_length=512,
+            batch_size=16,
             epochs=100,
             total_steps=1000,
             checkpoint_interval=1000,
@@ -74,7 +74,7 @@ def default_ilql_config():
         model=ModelConfig(model_path="gpt2", num_layers_unfrozen=-1),
         tokenizer=TokenizerConfig(tokenizer_path="gpt2", truncation_side="right"),
         optimizer=OptimizerConfig(
-            name="adamw", kwargs=dict(lr=5.0e-5, betas=(0.9, 0.95), eps=1.0e-8, weight_decay=1.0e-6)
+            name="adamw", kwargs=dict(lr=5.0e-2, betas=(0.93, 0.98), eps=1.0e-8, weight_decay=0)
         ),
         scheduler=SchedulerConfig(
             name="cosine_annealing", kwargs=dict(T_max=1e12, eta_min=5.0e-5)  # train.total_steps
@@ -89,7 +89,7 @@ def default_ilql_config():
             beta=0,
             steps_for_target_q_sync=5,
             two_qs=True,
-            gen_kwargs=dict(max_new_tokens=56, top_k=20, beta=1, temperature=1.0),
+            gen_kwargs=dict(max_new_tokens=128, top_k=20, beta=1, temperature=1.0),
         ),
     )
 
@@ -97,10 +97,10 @@ def default_ilql_config():
 def default_sft_config():
     return TRLConfig(
         train=TrainConfig(
-            seq_length=1024,
+            seq_length=512,
             epochs=100,
             total_steps=1000,
-            batch_size=8,
+            batch_size=16,
             checkpoint_interval=10000,
             eval_interval=100,
             pipeline="PromptPipeline",
@@ -109,14 +109,14 @@ def default_sft_config():
         model=ModelConfig(model_path="gpt2", num_layers_unfrozen=-1),
         tokenizer=TokenizerConfig(tokenizer_path="gpt2", truncation_side="right"),
         optimizer=OptimizerConfig(
-            name="adamw", kwargs=dict(lr=1.0e-4, betas=(0.9, 0.95), eps=1.0e-8, weight_decay=1.0e-6)
+            name="adamw", kwargs=dict(lr=1.0e-2, betas=(0.93, 0.98), eps=1.0e-8, weight_decay=0)
         ),
         scheduler=SchedulerConfig(
             name="cosine_annealing", kwargs=dict(T_max=1e12, eta_min=1.0e-4)  # train.total_steps
         ),
         method=SFTConfig(
             name="sftconfig",
-            gen_kwargs=dict(max_new_tokens=40, top_k=0, top_p=1.0, do_sample=True),
+            gen_kwargs=dict(max_new_tokens=64, top_k=20, top_p=1.0, do_sample=True),
         ),
     )
 
