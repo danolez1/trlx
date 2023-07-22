@@ -63,18 +63,18 @@ def default_ilql_config():
     return TRLConfig(
         train=TrainConfig(
             seq_length=512,
-            batch_size=16,
+            batch_size=8,
             epochs=100,
-            total_steps=1000,
-            checkpoint_interval=1000,
-            eval_interval=100,
+            total_steps=10000,
+            checkpoint_interval=10000,
+            eval_interval=1000,
             pipeline="PromptPipeline",
             trainer="AccelerateILQLTrainer",
         ),
         model=ModelConfig(model_path="gpt2", num_layers_unfrozen=-1),
         tokenizer=TokenizerConfig(tokenizer_path="gpt2", truncation_side="right"),
         optimizer=OptimizerConfig(
-            name="adamw", kwargs=dict(lr=5.0e-2, betas=(0.93, 0.98), eps=1.0e-8, weight_decay=0)
+            name="adamw", kwargs=dict(lr=5.0e-4, betas=(0.9, 0.95), eps=1.0e-8, weight_decay=1.0e-8)
         ),
         scheduler=SchedulerConfig(
             name="cosine_annealing", kwargs=dict(T_max=1e12, eta_min=5.0e-5)  # train.total_steps
@@ -99,17 +99,17 @@ def default_sft_config():
         train=TrainConfig(
             seq_length=512,
             epochs=100,
-            total_steps=1000,
-            batch_size=16,
+            total_steps=80000,
+            batch_size=8,
             checkpoint_interval=10000,
-            eval_interval=100,
+            eval_interval=1000,
             pipeline="PromptPipeline",
             trainer="AccelerateSFTTrainer",
         ),
         model=ModelConfig(model_path="gpt2", num_layers_unfrozen=-1),
         tokenizer=TokenizerConfig(tokenizer_path="gpt2", truncation_side="right"),
         optimizer=OptimizerConfig(
-            name="adamw", kwargs=dict(lr=1.0e-2, betas=(0.93, 0.98), eps=1.0e-8, weight_decay=0)
+            name="adamw", kwargs=dict(lr=5.0e-4, betas=(0.9, 0.95), eps=1.0e-8, weight_decay=1.0e-24)
         ),
         scheduler=SchedulerConfig(
             name="cosine_annealing", kwargs=dict(T_max=1e12, eta_min=1.0e-4)  # train.total_steps
