@@ -99,7 +99,7 @@ def default_sft_config():
         train=TrainConfig(
             seq_length=512,
             epochs=100,
-            total_steps=80000,
+            total_steps=20000,
             batch_size=8,
             checkpoint_interval=10000,
             eval_interval=1000,
@@ -109,14 +109,14 @@ def default_sft_config():
         model=ModelConfig(model_path="gpt2", num_layers_unfrozen=-1),
         tokenizer=TokenizerConfig(tokenizer_path="gpt2", truncation_side="right"),
         optimizer=OptimizerConfig(
-            name="adamw", kwargs=dict(lr=5.0e-4, betas=(0.9, 0.95), eps=1.0e-8, weight_decay=1.0e-24)
+            name="adamw", kwargs=dict(lr=5.0e-4, betas=(0.9, 0.95), eps=1.0e-8, weight_decay=0)
         ),
         scheduler=SchedulerConfig(
             name="cosine_annealing", kwargs=dict(T_max=1e12, eta_min=1.0e-4)  # train.total_steps
         ),
         method=SFTConfig(
             name="sftconfig",
-            gen_kwargs=dict(max_new_tokens=64, top_k=20, top_p=1.0, do_sample=True),
+            gen_kwargs=dict(max_new_tokens=64, top_k=12, top_p=2.4, no_repeat_ngram_size=5 ,temperature=0.8, num_beams=8, early_stopping=True, do_sample=True),
         ),
     )
 
