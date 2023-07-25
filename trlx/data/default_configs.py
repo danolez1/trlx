@@ -31,7 +31,7 @@ def default_ppo_config():
         tokenizer=TokenizerConfig(
             tokenizer_path="gpt2", truncation_side="right"),
         optimizer=OptimizerConfig(
-            name="adamw", kwargs=dict(lr=7e-4, betas=(0.9, 0.95), eps=1.0e-8, weight_decay=0)
+            name="adamw", kwargs=dict(lr=5e-4, betas=(0.9, 0.95), eps=1.0e-8, weight_decay=0)
         ),
         scheduler=SchedulerConfig(
             name="cosine_annealing", kwargs=dict(T_max=1e12, eta_min=3e-5)),
