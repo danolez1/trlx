@@ -98,7 +98,7 @@ def default_sft_config():
     return TRLConfig(
         train=TrainConfig(
             seq_length=512,
-            epochs=100,
+            epochs=2,
             total_steps=20000,
             batch_size=8,
             checkpoint_interval=10000,
