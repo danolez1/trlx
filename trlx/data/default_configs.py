@@ -17,21 +17,24 @@ from .configs import (
 def default_ppo_config():
     return TRLConfig(
         train=TrainConfig(
-            seq_length=1024,
-            epochs=100,
+            seq_length=512,
+            epochs=3,
             total_steps=10000,
-            batch_size=32,
+            batch_size=8,
             checkpoint_interval=10000,
-            eval_interval=100,
+            eval_interval=1000,
             pipeline="PromptPipeline",
             trainer="AcceleratePPOTrainer",
         ),
-        model=ModelConfig(model_path="lvwerra/gpt2-imdb", num_layers_unfrozen=2),
-        tokenizer=TokenizerConfig(tokenizer_path="gpt2", truncation_side="right"),
+        model=ModelConfig(model_path="lvwerra/gpt2-imdb",
+                          num_layers_unfrozen=2),
+        tokenizer=TokenizerConfig(
+            tokenizer_path="gpt2", truncation_side="right"),
         optimizer=OptimizerConfig(
-            name="adamw", kwargs=dict(lr=3e-2, betas=(0.93, 0.98), eps=1.0e-8, weight_decay=0)
+            name="adamw", kwargs=dict(lr=7e-4, betas=(0.9, 0.95), eps=1.0e-8, weight_decay=0)
         ),
-        scheduler=SchedulerConfig(name="cosine_annealing", kwargs=dict(T_max=1e12, eta_min=3e-5)),
+        scheduler=SchedulerConfig(
+            name="cosine_annealing", kwargs=dict(T_max=1e12, eta_min=3e-5)),
         method=PPOConfig(
             name="PPOConfig",
             num_rollouts=128,
@@ -49,12 +52,9 @@ def default_ppo_config():
             ref_mean=None,
             ref_std=None,
             cliprange_reward=10,
-            gen_kwargs=dict(
-                max_new_tokens=40,
-                top_k=0,
-                top_p=1.0,
-                do_sample=True,
-            ),
+            gen_kwargs=dict(max_new_tokens=256, top_k=12, top_p=2.4, no_repeat_ngram_size=5,
+                            temperature=0.8, num_beams=8, early_stopping=True, do_sample=True),
+
         ),
     )
 
@@ -72,12 +72,14 @@ def default_ilql_config():
             trainer="AccelerateILQLTrainer",
         ),
         model=ModelConfig(model_path="gpt2", num_layers_unfrozen=-1),
-        tokenizer=TokenizerConfig(tokenizer_path="gpt2", truncation_side="right"),
+        tokenizer=TokenizerConfig(
+            tokenizer_path="gpt2", truncation_side="right"),
         optimizer=OptimizerConfig(
             name="adamw", kwargs=dict(lr=5.0e-4, betas=(0.9, 0.95), eps=1.0e-8, weight_decay=1.0e-8)
         ),
         scheduler=SchedulerConfig(
-            name="cosine_annealing", kwargs=dict(T_max=1e12, eta_min=5.0e-5)  # train.total_steps
+            # train.total_steps
+            name="cosine_annealing", kwargs=dict(T_max=1e12, eta_min=5.0e-5)
         ),
         method=ILQLConfig(
             name="ilqlconfig",
@@ -89,7 +91,8 @@ def default_ilql_config():
             beta=0,
             steps_for_target_q_sync=5,
             two_qs=True,
-            gen_kwargs=dict(max_new_tokens=128, top_k=20, beta=1, temperature=1.0),
+            gen_kwargs=dict(max_new_tokens=128, top_k=20,
+                            beta=1, temperature=1.0),
         ),
     )
 
@@ -107,16 +110,19 @@ def default_sft_config():
             trainer="AccelerateSFTTrainer",
         ),
         model=ModelConfig(model_path="gpt2", num_layers_unfrozen=-1),
-        tokenizer=TokenizerConfig(tokenizer_path="gpt2", truncation_side="right"),
+        tokenizer=TokenizerConfig(
+            tokenizer_path="gpt2", truncation_side="right"),
         optimizer=OptimizerConfig(
             name="adamw", kwargs=dict(lr=5.0e-4, betas=(0.9, 0.95), eps=1.0e-8, weight_decay=0)
         ),
         scheduler=SchedulerConfig(
-            name="cosine_annealing", kwargs=dict(T_max=1e12, eta_min=1.0e-4)  # train.total_steps
+            # train.total_steps
+            name="cosine_annealing", kwargs=dict(T_max=1e12, eta_min=1.0e-4)
         ),
         method=SFTConfig(
             name="sftconfig",
-            gen_kwargs=dict(max_new_tokens=64, top_k=12, top_p=2.4, no_repeat_ngram_size=5 ,temperature=0.8, num_beams=8, early_stopping=True, do_sample=True),
+            gen_kwargs=dict(max_new_tokens=64, top_k=12, top_p=2.4, no_repeat_ngram_size=5,
+                            temperature=0.8, num_beams=8, early_stopping=True, do_sample=True),
         ),
     )
 
